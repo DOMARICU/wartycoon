@@ -5,11 +5,13 @@ local flySpeed = 50
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-local bodyVelocity
-local bodyGyro
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")
+local RunService = game:GetService("RunService")
+
+local FlyBodyGyro
+local FlyBodyVelocity
 
 function functions.fly(value)
     if value and not isFlying then
@@ -25,46 +27,57 @@ function functions.fly(value)
             end
         end
 
-        bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
-        bodyVelocity.MaxForce = Vector3.new(1e9, 1e9, 1e9)
-        bodyVelocity.Velocity = Vector3.zero
-        
-        bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
-        bodyGyro.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
-        bodyGyro.CFrame = humanoidRootPart.CFrame
+        FlyBodyGyro = Instance.new("BodyGyro")
+        FlyBodyGyro.P = 9e4
+        FlyBodyGyro.MaxTorque = Vector3.new(9e4, 9e4, 9e4)
+        FlyBodyGyro.CFrame = camera.CFrame
+        FlyBodyGyro.Parent = humanoidRootPart
 
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if isFlying then
-                local moveDirection = Vector3.zero
+        FlyBodyVelocity = Instance.new("BodyVelocity")
+        FlyBodyVelocity.Velocity = Vector3.zero
+        FlyBodyVelocity.MaxForce = Vector3.new(9e4, 9e4, 9e4)
+        FlyBodyVelocity.Parent = humanoidRootPart
 
-                if userInputService:IsKeyDown(Enum.KeyCode.W) then
-                    moveDirection = moveDirection + camera.CFrame.LookVector
-                end
-                if userInputService:IsKeyDown(Enum.KeyCode.S) then
-                    moveDirection = moveDirection - camera.CFrame.LookVector
-                end
-                if userInputService:IsKeyDown(Enum.KeyCode.A) then
-                    moveDirection = moveDirection - camera.CFrame.RightVector
-                end
-                if userInputService:IsKeyDown(Enum.KeyCode.D) then
-                    moveDirection = moveDirection + camera.CFrame.RightVector
-                end
-                if userInputService:IsKeyDown(Enum.KeyCode.Space) then
-                    moveDirection = moveDirection + Vector3.new(0, 1, 0)
-                end
-                if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                    moveDirection = moveDirection - Vector3.new(0, 1, 0)
-                end
+        local function updateFly()
+            if not isFlying then return end
 
-                bodyVelocity.Velocity = moveDirection.Unit * flySpeed
+            local direction = Vector3.zero
+
+            if userInputService:IsKeyDown(Enum.KeyCode.W) then
+                direction = direction + camera.CFrame.LookVector
             end
-        end)
+            if userInputService:IsKeyDown(Enum.KeyCode.S) then
+                direction = direction - camera.CFrame.LookVector
+            end
+            if userInputService:IsKeyDown(Enum.KeyCode.A) then
+                direction = direction - camera.CFrame.RightVector
+            end
+            if userInputService:IsKeyDown(Enum.KeyCode.D) then
+                direction = direction + camera.CFrame.RightVector
+            end
+            if userInputService:IsKeyDown(Enum.KeyCode.Space) then
+                direction = direction + Vector3.new(0, 1, 0)
+            end
+            if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+                direction = direction - Vector3.new(0, 1, 0)
+            end
 
-    elseif not value and isFlying then
+            FlyBodyVelocity.Velocity = direction.Unit * flySpeed
+            FlyBodyGyro.CFrame = camera.CFrame
+
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") and part.CanCollide then
+                    part.CanCollide = false
+                end
+            end
+        end
+
+        RunService:BindToRenderStep("Fly", Enum.RenderPriority.Character.Value, updateFly)
+    else
         isFlying = false
 
-        if bodyVelocity then bodyVelocity:Destroy() end
-        if bodyGyro then bodyGyro:Destroy() end
+        if FlyBodyGyro then FlyBodyGyro:Destroy() end
+        if FlyBodyVelocity then FlyBodyVelocity:Destroy() end
 
         for _, part in ipairs(character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -75,6 +88,8 @@ function functions.fly(value)
         if freefallSetting then
             freefallSetting.Disabled = false
         end
+
+        RunService:UnbindFromRenderStep("Fly")
     end
 end
 
