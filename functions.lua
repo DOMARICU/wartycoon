@@ -9,7 +9,7 @@ local bodyVelocity
 local bodyGyro
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
-local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")--
+local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")
 
 function functions.fly(value)
     if value and not isFlying then
@@ -20,11 +20,11 @@ function functions.fly(value)
         end
 
         bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
-        bodyVelocity.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+        bodyVelocity.MaxForce = Vector3.new(1e9, 1e9, 1e9)
         bodyVelocity.Velocity = Vector3.zero
         
         bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
-        bodyGyro.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
+        bodyGyro.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
         bodyGyro.CFrame = humanoidRootPart.CFrame
 
         userInputService.InputBegan:Connect(function(input)
@@ -45,6 +45,12 @@ function functions.fly(value)
             end
         end)
 
+        userInputService.InputChanged:Connect(function(input)
+            if isFlying and input.UserInputType == Enum.UserInputType.MouseMovement then
+                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + camera.CFrame.LookVector)
+            end
+        end)
+
         userInputService.InputEnded:Connect(function(input)
             if isFlying then
                 bodyVelocity.Velocity = Vector3.zero
@@ -53,6 +59,7 @@ function functions.fly(value)
 
     elseif not value and isFlying then
         isFlying = false
+
         if bodyVelocity then bodyVelocity:Destroy() end
         if bodyGyro then bodyGyro:Destroy() end
         if freefallSetting then
