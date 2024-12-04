@@ -56,7 +56,7 @@ function createui.addelements(Window)
 
   local Slider = MAINTAB:CreateSlider({
     Name = "Fly Speed",
-    Range = {0, 100},
+    Range = {5, 100},
     Increment = 2,
     Suffix = "Fly Speed",
     CurrentValue = 50,
