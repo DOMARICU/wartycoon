@@ -9,7 +9,7 @@ local bodyVelocity
 local bodyGyro
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
-local freefallSetting = player:WaitForChild("Freefall")
+local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")
 
 function functions.fly(value)
     if value and not isFlying then
@@ -26,6 +26,7 @@ function functions.fly(value)
         bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
         bodyGyro.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
         bodyGyro.CFrame = humanoidRootPart.CFrame
+
         userInputService.InputBegan:Connect(function(input)
             if isFlying then
                 if input.KeyCode == Enum.KeyCode.W then
