@@ -24,7 +24,7 @@ function blockFallDamage()
 
     FDMGConnection = FDMG.OnClientEvent:Connect(function()
         if isFlying then
-            FDMG:FireServer(0)
+            return
         end
     end)
 end
