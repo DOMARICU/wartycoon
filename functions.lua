@@ -19,6 +19,12 @@ function functions.fly(value)
             freefallSetting.Disabled = true
         end
 
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+
         bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
         bodyVelocity.MaxForce = Vector3.new(1e9, 1e9, 1e9)
         bodyVelocity.Velocity = Vector3.zero
@@ -27,33 +33,30 @@ function functions.fly(value)
         bodyGyro.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
         bodyGyro.CFrame = humanoidRootPart.CFrame
 
-        userInputService.InputBegan:Connect(function(input)
+        game:GetService("RunService").RenderStepped:Connect(function()
             if isFlying then
-                if input.KeyCode == Enum.KeyCode.W then
-                    bodyVelocity.Velocity = camera.CFrame.LookVector * flySpeed
-                elseif input.KeyCode == Enum.KeyCode.S then
-                    bodyVelocity.Velocity = -camera.CFrame.LookVector * flySpeed
-                elseif input.KeyCode == Enum.KeyCode.A then
-                    bodyVelocity.Velocity = -camera.CFrame.RightVector * flySpeed
-                elseif input.KeyCode == Enum.KeyCode.D then
-                    bodyVelocity.Velocity = camera.CFrame.RightVector * flySpeed
-                elseif input.KeyCode == Enum.KeyCode.Space then
-                    bodyVelocity.Velocity = Vector3.new(0, flySpeed, 0)
-                elseif input.KeyCode == Enum.KeyCode.LeftShift then
-                    bodyVelocity.Velocity = Vector3.new(0, -flySpeed, 0)
+                local moveDirection = Vector3.zero
+
+                if userInputService:IsKeyDown(Enum.KeyCode.W) then
+                    moveDirection = moveDirection + camera.CFrame.LookVector
                 end
-            end
-        end)
+                if userInputService:IsKeyDown(Enum.KeyCode.S) then
+                    moveDirection = moveDirection - camera.CFrame.LookVector
+                end
+                if userInputService:IsKeyDown(Enum.KeyCode.A) then
+                    moveDirection = moveDirection - camera.CFrame.RightVector
+                end
+                if userInputService:IsKeyDown(Enum.KeyCode.D) then
+                    moveDirection = moveDirection + camera.CFrame.RightVector
+                end
+                if userInputService:IsKeyDown(Enum.KeyCode.Space) then
+                    moveDirection = moveDirection + Vector3.new(0, 1, 0)
+                end
+                if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+                    moveDirection = moveDirection - Vector3.new(0, 1, 0)
+                end
 
-        userInputService.InputChanged:Connect(function(input)
-            if isFlying and input.UserInputType == Enum.UserInputType.MouseMovement then
-                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + camera.CFrame.LookVector)
-            end
-        end)
-
-        userInputService.InputEnded:Connect(function(input)
-            if isFlying then
-                bodyVelocity.Velocity = Vector3.zero
+                bodyVelocity.Velocity = moveDirection.Unit * flySpeed
             end
         end)
 
@@ -62,6 +65,13 @@ function functions.fly(value)
 
         if bodyVelocity then bodyVelocity:Destroy() end
         if bodyGyro then bodyGyro:Destroy() end
+
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
+
         if freefallSetting then
             freefallSetting.Disabled = false
         end
