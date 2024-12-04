@@ -2,6 +2,7 @@ local functions = {}
 
 local isFlying = false
 local flySpeed = 50
+local sprintSpeedMultiplier = 1.5
 local player = game.Players.LocalPlayer
 local character = workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
@@ -10,9 +11,24 @@ local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local freefallSetting = character:FindFirstChild("Freefall")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local FlyBodyGyro
 local FlyBodyVelocity
+local FDMGConnection
+
+function blockFallDamage()
+    local ACS_Engine = ReplicatedStorage:WaitForChild("ACS_Engine")
+    local Events = ACS_Engine:WaitForChild("Events")
+    local FDMG = Events:WaitForChild("FDMG")
+
+    FDMGConnection = FDMG.OnClientEvent:Connect(function()
+        if isFlying then
+            return
+        end
+    end)
+end
+blockFallDamage()
 
 function functions.fly(value)
     if value and not isFlying then
@@ -59,12 +75,14 @@ function functions.fly(value)
             if userInputService:IsKeyDown(Enum.KeyCode.Space) then
                 direction = direction + Vector3.new(0, 1, 0)
             end
+
+            local currentFlySpeed = flySpeed
             if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                direction = direction - Vector3.new(0, 1, 0)
+                currentFlySpeed = flySpeed * sprintSpeedMultiplier
             end
 
             if direction.Magnitude > 0 then
-                FlyBodyVelocity.Velocity = direction.Unit * flySpeed
+                FlyBodyVelocity.Velocity = direction.Unit * currentFlySpeed
             else
                 FlyBodyVelocity.Velocity = Vector3.zero
             end
