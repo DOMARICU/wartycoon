@@ -3,11 +3,12 @@ local functions = {}
 local isFlying = false
 local flySpeed = 50
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local character = workspace:WaitForChild(player.Name)
+local humanoid = character:WaitForChild("Humanoid")
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("Humanoid")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
-local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")
+local freefallSetting = character:FindFirstChild("Freefall")
 local RunService = game:GetService("RunService")
 
 local FlyBodyGyro
@@ -62,7 +63,11 @@ function functions.fly(value)
                 direction = direction - Vector3.new(0, 1, 0)
             end
 
-            FlyBodyVelocity.Velocity = direction.Unit * flySpeed
+            if direction.Magnitude > 0 then
+                FlyBodyVelocity.Velocity = direction.Unit * flySpeed
+            else
+                FlyBodyVelocity.Velocity = Vector3.zero
+            end
             FlyBodyGyro.CFrame = camera.CFrame
 
             for _, part in ipairs(character:GetDescendants()) do
