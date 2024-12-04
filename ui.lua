@@ -1,6 +1,6 @@
 local createui = {}
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-local functions = loadstring(game:HttpGet("https://raw.githubusercontent.com/DOMARICU/wartycoon/refs/heads/main/functions.lua"))
+local functions = loadstring(game:HttpGet("https://raw.githubusercontent.com/DOMARICU/wartycoon/refs/heads/main/functions.lua"))()
 
 function createui.start()
   local Window = Rayfield:CreateWindow({
@@ -53,8 +53,9 @@ function createui.addelements(Window)
       functions.fly(Value)
     end,
   })
+
   local Slider = MAINTAB:CreateSlider({
-    Name = "Slider Example",
+    Name = "Fly Speed",
     Range = {0, 100},
     Increment = 2,
     Suffix = "Fly Speed",
