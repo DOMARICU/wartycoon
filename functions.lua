@@ -9,7 +9,7 @@ local bodyVelocity
 local bodyGyro
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
-local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")
+local freefallSetting = workspace:WaitForChild(player.Name):WaitForChild("Freefall")--
 
 function functions.fly(value)
     if value and not isFlying then
