@@ -30,6 +30,14 @@ function blockFallDamage()
 end
 blockFallDamage()
 
+local function onCharacterAdded(newCharacter)
+    character = newCharacter
+    humanoid = character:WaitForChild("Humanoid")
+    humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
+    freefallSetting = character:FindFirstChild("Freefall")
+end
+player.CharacterAdded:Connect(onCharacterAdded)
+
 function functions.fly(value)
     if value and not isFlying then
         isFlying = true
