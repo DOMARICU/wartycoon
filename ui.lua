@@ -1,5 +1,6 @@
 local createui = {}
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local functions = loadstring(game:HttpGet("LINK"))
 
 function createui.start()
   local Window = Rayfield:CreateWindow({
@@ -24,7 +25,7 @@ function createui.start()
        RememberJoins = true
     },
   
-    KeySystem = false, -- Set this to true to use our key system
+    KeySystem = false,
     KeySettings = {
        Title = "Untitled",
        Subtitle = "Key System",
@@ -34,8 +35,11 @@ function createui.start()
        GrabKeyFromSite = false,
        Key = {"Hello"}
     }
-  })
-  
+  }) 
+  createui.addelements(Window)
+end
+
+function createui.addelements(Window)
   local MAINTAB = Window:CreateTab("MAIN", "warehouse")
   local VISUALSTAB = Window:CreateTab("VISUALS", "crosshair")
   local RAGETAB = Window:CreateTab("RAGE", "swords")
