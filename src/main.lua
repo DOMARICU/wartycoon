@@ -64,6 +64,8 @@ function functions.fly(value)
         isFlying = true
 
         humanoid.PlatformStand = true
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
         functions.noclip(true)
         renameFallDamageEvent(true)
 
@@ -113,12 +115,20 @@ function functions.fly(value)
         isFlying = false
 
         humanoid.PlatformStand = false
+        humanoid.WalkSpeed = 16
+        humanoid.JumpPower = 50
         functions.noclip(false)
         renameFallDamageEvent(false)
 
-        if FlyBodyGyro then FlyBodyGyro:Destroy() end
-        if FlyBodyVelocity then FlyBodyVelocity:Destroy() end
-        if flyConnection then flyConnection:Disconnect() end
+        if FlyBodyGyro then FlyBodyGyro:Destroy() FlyBodyGyro = nil end
+        if FlyBodyVelocity then FlyBodyVelocity:Destroy() FlyBodyVelocity = nil end
+        if flyConnection then flyConnection:Disconnect() flyConnection = nil end
+
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
     end
 end
 
