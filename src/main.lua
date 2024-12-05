@@ -52,10 +52,13 @@ function functions.fly(value)
 
         humanoid.PlatformStand = true
         renameFallDamageEvent(true)
+
         noclipConnection = RunService.Stepped:Connect(function()
-            for _, part in ipairs(character:GetDescendants()) do
-                if part:IsA("BasePart") and part.CanCollide then
-                    part.CanCollide = false
+            if character and character.Parent then
+                for _, part in ipairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide then
+                        part.CanCollide = false
+                    end
                 end
             end
         end)
@@ -126,7 +129,7 @@ end
 player.CharacterAdded:Connect(function(newCharacter)
     character = newCharacter
     humanoid = character:WaitForChild("Humanoid")
-    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
     resetCharacter()
     isFlying = false
 end)
