@@ -15,25 +15,21 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local FlyBodyGyro
 local FlyBodyVelocity
-local FDMGConnection
+local originalFDMGName = "FDMG"
 
-function blockFallDamage()
+local function renameFallDamageEvent(rename)
     local ACS_Engine = ReplicatedStorage:WaitForChild("ACS_Engine")
     local Events = ACS_Engine:WaitForChild("Events")
-    local FDMG = Events:WaitForChild("FDMG")
+    local FDMG = Events:FindFirstChild(originalFDMGName)
 
-    FDMGConnection = FDMG.OnClientEvent:Connect(function(damage)
-        if isFlying then
-            local args = {
-                [1] = 0
-            }
-            FDMG:FireServer(unpack(args))
+    if FDMG then
+        if rename then
+            FDMG.Name = "FDMG "
         else
-            FDMG:FireServer(damage)
+            FDMG.Name = originalFDMGName
         end
-    end)
+    end
 end
-blockFallDamage()
 
 local function onCharacterAdded(newCharacter)
     character = newCharacter
@@ -47,6 +43,7 @@ function functions.fly(value)
     if value and not isFlying then
         isFlying = true
 
+        renameFallDamageEvent(true)
         if freefallSetting then
             freefallSetting.Disabled = true
         end
@@ -112,6 +109,7 @@ function functions.fly(value)
     else
         isFlying = false
 
+        renameFallDamageEvent(false)
         if FlyBodyGyro then FlyBodyGyro:Destroy() end
         if FlyBodyVelocity then FlyBodyVelocity:Destroy() end
 
@@ -133,7 +131,7 @@ function functions.adjustflyspeed(speed)
     if type(speed) == "number" and speed > 0 then
         flySpeed = speed
     else
-        warn("Ungültige Geschwindigkeit. Bitte eine positive Zahl eingeben.")
+        warn("ERROR! API reports: Speed ​​invalid")
     end
 end
 
