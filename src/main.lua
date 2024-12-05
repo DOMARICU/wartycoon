@@ -47,8 +47,8 @@ local function resetCharacterAppearance()
     humanoid.PlatformStand = false
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
-    humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
-    humanoid:Move(Vector3.new(0, 0, 0), true)
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    humanoidRootPart.Size = Vector3.new(2, 2, 1)
 end
 
 local function onCharacterAdded(newCharacter)
