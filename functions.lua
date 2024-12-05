@@ -24,7 +24,7 @@ local function renameFallDamageEvent(rename)
 
     if FDMG then
         if rename then
-            FDMG.Name = "FDMG "
+            FDMG.Name = "FDMG"
         else
             FDMG.Name = originalFDMGName
         end
