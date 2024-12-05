@@ -96,13 +96,17 @@ function functions.fly(value)
             if userInputService:IsKeyDown(Enum.KeyCode.Space) then
                 direction += Vector3.new(0, 1, 0)
             end
+
+            local newSpeed = flySpeed
             if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                SPEED = flySpeed * sprintSpeedMultiplier
-            else
-                SPEED = flySpeed
+                newSpeed = flySpeed * sprintSpeedMultiplier
             end
 
-            FlyBodyVelocity.Velocity = direction.Unit * SPEED
+            if direction.Magnitude > 0 then
+                FlyBodyVelocity.Velocity = direction.Unit * newSpeed
+            else
+                FlyBodyVelocity.Velocity = Vector3.zero
+            end
             FlyBodyGyro.CFrame = camera.CFrame
         end)
     elseif not value and isFlying then
