@@ -44,7 +44,13 @@ local function resetCharacter()
         end
     end
     humanoid.PlatformStand = false
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
     renameFallDamageEvent(false)
+
+    if humanoidRootPart then
+        humanoidRootPart.Velocity = Vector3.zero
+        humanoidRootPart.Anchored = false
+    end
 end
 
 function functions.fly(value)
