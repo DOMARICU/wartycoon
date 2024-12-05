@@ -35,6 +35,15 @@ local function renameFallDamageEvent(rename)
     end
 end
 
+local function onCharacterAdded(newCharacter)
+    character = newCharacter
+    humanoid = character:WaitForChild("Humanoid")
+    humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
+    functions.noclip(false)
+    isFlying = false
+end
+player.CharacterAdded:Connect(onCharacterAdded)
+
 function functions.noclip(value)
     if value and not isNoclip then
         isNoclip = true
