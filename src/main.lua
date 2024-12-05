@@ -10,6 +10,7 @@ local humanoid = character:WaitForChild("Humanoid")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local CONTROL = {F = 0, B = 0, L = 0, R = 0}
 local lCONTROL = {F = 0, B = 0, L = 0, R = 0}
