@@ -5,7 +5,7 @@ local isNoclip = false
 local flySpeed = 50
 local sprintSpeedMultiplier = 1.5
 local player = game.Players.LocalPlayer
-local character = workspace:WaitForChild(player.Name)
+local character = player.Character or workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
 local userInputService = game:GetService("UserInputService")
@@ -35,25 +35,21 @@ local function renameFallDamageEvent(rename)
     end
 end
 
-local function resetCharacterAppearance()
-    humanoid.PlatformStand = false
-    humanoid.WalkSpeed = 16
-    humanoid.JumpPower = 50
-    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-    if humanoidRootPart then
-        humanoidRootPart.CanCollide = true
-        humanoidRootPart.Velocity = Vector3.zero
-        humanoidRootPart.RotVelocity = Vector3.zero
-    end
-end
-
 local function resetCharacterCollisions()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
             part.CanCollide = true
-            part.Velocity = Vector3.zero
         end
     end
+end
+
+local function resetCharacterAppearance()
+    humanoid.PlatformStand = false
+    humanoid.WalkSpeed = 16
+    humanoid.JumpPower = 50
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp) -- Reset state to standard
+    humanoidRootPart.Velocity = Vector3.zero -- Stop movement
+    humanoidRootPart.RotVelocity = Vector3.zero -- Stop rotational movement
 end
 
 local function onCharacterAdded(newCharacter)
@@ -62,6 +58,7 @@ local function onCharacterAdded(newCharacter)
     humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
     functions.noclip(false)
     resetCharacterCollisions()
+    resetCharacterAppearance()
     isFlying = false
 end
 player.CharacterAdded:Connect(onCharacterAdded)
@@ -91,8 +88,8 @@ function functions.fly(value)
         isFlying = true
 
         humanoid.PlatformStand = true
-        humanoid.WalkSpeed = 0
-        humanoid.JumpPower = 0
+        humanoid.WalkSpeed = 0  -- Prevent walking sounds
+        humanoid.JumpPower = 0 -- Prevent jumping
         functions.noclip(true)
         renameFallDamageEvent(true)
 
@@ -162,4 +159,3 @@ function functions.adjustflyspeed(speed)
 end
 
 return functions
--------------------------------------------------
