@@ -2,9 +2,14 @@ local functions = {}
 
 local isFlying = false
 local isNoclip = false
-local flySpeed = 50
+local hitboxEnabled = false
+
+local flySpeed = 12
 local sprintSpeedMultiplier = 1.5
+local hitboxSize = 5
+
 local player = game.Players.LocalPlayer
+local Players = game:GEtService("Players")
 local character = player.Character or workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
@@ -152,6 +157,56 @@ function functions.adjustflyspeed(speed)
         flySpeed = speed
     else
         warn("ERROR: Invalid speed value.")
+    end
+end
+
+-----------------------Hitboxes--------------------------
+
+function functions.hitbox(value)
+    if value and not hitboxEnabled then
+        hitboxEnabled = true
+
+        hitboxConnection = RunService.Heartbeat:Connect(function()
+            for _, otherPlayer in ipairs(Players:GetPlayers()) do
+                if otherPlayer ~= player and otherPlayer.Character then
+                    local character = otherPlayer.Character
+                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                    if humanoidRootPart then
+                        humanoidRootPart.Size = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
+                        humanoidRootPart.Transparency = 0.5
+                        humanoidRootPart.CanCollide = false
+                    end
+                end
+            end
+        end)
+
+    elseif not value and hitboxEnabled then
+        hitboxEnabled = false
+
+        if hitboxConnection then
+            hitboxConnection:Disconnect()
+            hitboxConnection = nil
+        end
+
+        for _, otherPlayer in ipairs(Players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character then
+                local character = otherPlayer.Character
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    humanoidRootPart.Size = Vector3.new(2, 2, 1)
+                    humanoidRootPart.Transparency = 0
+                    humanoidRootPart.CanCollide = true
+                end
+            end
+        end
+    end
+end
+
+function functions.adjusthitbox(size)
+    if type(size) == "number" and size > 0 then
+        hitboxSize = size
+    else
+        warn("Invalid size. Must be a positive number.")
     end
 end
 

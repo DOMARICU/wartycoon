@@ -56,15 +56,36 @@ function createui.addelements(Window)
 
   local Slider = MAINTAB:CreateSlider({
     Name = "Fly Speed",
-    Range = {5, 100},
-    Increment = 2,
+    Range = {0, 25},
+    Increment = 1,
     Suffix = "Fly Speed",
-    CurrentValue = 50,
+    CurrentValue = 12,
     Flag = "flyslider",
     Callback = function(Value)
       functions.adjustflyspeed(Value)
     end,
- })
+  })
+
+  local Toggle = RAGE:CreateToggle({
+    Name = "Hitbox",
+    CurrentValue = false,
+    Flag = "hitbx",
+    Callback = function(Value)
+      functions.hitbox(Value)
+    end,
+  })
+
+  local Slider = MAINTAB:CreateSlider({
+    Name = "Hitbox",
+    Range = {0, 20},
+    Increment = 2,
+    Suffix = "Size",
+    CurrentValue = 5,
+    Flag = "adjusthitbox",
+    Callback = function(Value)
+      functions.adjustflyspeed(Value)
+    end,
+  })
 end
 
 return createui
