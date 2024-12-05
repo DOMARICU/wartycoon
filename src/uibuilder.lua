@@ -66,7 +66,7 @@ function createui.addelements(Window)
     end,
   })
 
-  local Toggle = RAGETAB:CreateToggle({
+  local Toggle1 = RAGETAB:CreateToggle({
     Name = "Hitbox",
     CurrentValue = false,
     Flag = "hitbx",
@@ -75,7 +75,7 @@ function createui.addelements(Window)
     end,
   })
 
-  local Slider = MAINTAB:CreateSlider({
+  local Slider1 = MAINTAB:CreateSlider({
     Name = "Hitbox",
     Range = {0, 20},
     Increment = 2,
