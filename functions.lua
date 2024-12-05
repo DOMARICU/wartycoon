@@ -6,7 +6,7 @@ local sprintSpeedMultiplier = 1.5
 local player = game.Players.LocalPlayer
 local character = workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
-local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("Humanoid")
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local freefallSetting = character:FindFirstChild("Freefall")
@@ -16,6 +16,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local FlyBodyGyro
 local FlyBodyVelocity
 local originalFDMGName = "FDMG"
+local updateConnection
 
 local function renameFallDamageEvent(rename)
     local ACS_Engine = ReplicatedStorage:WaitForChild("ACS_Engine")
@@ -24,8 +25,7 @@ local function renameFallDamageEvent(rename)
 
     if FDMG then
         if rename then
-            FDMG.Name = "FDMG"
-            print("Renamed!")
+            FDMG.Name = "FDMG "
         else
             FDMG.Name = originalFDMGName
         end
@@ -57,16 +57,16 @@ function functions.fly(value)
 
         FlyBodyGyro = Instance.new("BodyGyro")
         FlyBodyGyro.P = 9e4
-        FlyBodyGyro.MaxTorque = Vector3.new(9e4, 9e4, 9e4)
+        FlyBodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
         FlyBodyGyro.CFrame = camera.CFrame
         FlyBodyGyro.Parent = humanoidRootPart
 
         FlyBodyVelocity = Instance.new("BodyVelocity")
         FlyBodyVelocity.Velocity = Vector3.zero
-        FlyBodyVelocity.MaxForce = Vector3.new(9e4, 9e4, 9e4)
+        FlyBodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
         FlyBodyVelocity.Parent = humanoidRootPart
 
-        local function updateFly()
+        updateConnection = RunService.RenderStepped:Connect(function()
             if not isFlying then return end
 
             local direction = Vector3.zero
@@ -104,15 +104,14 @@ function functions.fly(value)
                     part.CanCollide = false
                 end
             end
-        end
-
-        RunService:BindToRenderStep("Fly", Enum.RenderPriority.Character.Value, updateFly)
-    else
+        end)
+    elseif not value and isFlying then
         isFlying = false
 
         renameFallDamageEvent(false)
         if FlyBodyGyro then FlyBodyGyro:Destroy() end
         if FlyBodyVelocity then FlyBodyVelocity:Destroy() end
+        if updateConnection then updateConnection:Disconnect() end
 
         for _, part in ipairs(character:GetDescendants()) do
             if part:IsA("BasePart") then
@@ -123,8 +122,6 @@ function functions.fly(value)
         if freefallSetting then
             freefallSetting.Disabled = false
         end
-
-        RunService:UnbindFromRenderStep("Fly")
     end
 end
 
