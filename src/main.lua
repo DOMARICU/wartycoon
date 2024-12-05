@@ -204,23 +204,4 @@ function functions.hitbox(value)
     end
 end
 
-function functions.adjusthitbox(size)
-    if type(size) == "number" and size > 0 then
-        hitboxSize = size
-        if hitboxEnabled then
-            for _, otherPlayer in ipairs(Players:GetPlayers()) do
-                if otherPlayer ~= player and otherPlayer.Character then
-                    local character = otherPlayer.Character
-                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                    if humanoidRootPart then
-                        humanoidRootPart.Size = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
-                    end
-                end
-            end
-        end
-    else
-        warn("Invalid size. Must be a positive number.")
-    end
-end
-
 return functions

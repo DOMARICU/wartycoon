@@ -74,18 +74,6 @@ function createui.addelements(Window)
       functions.hitbox(Value)
     end,
   })
-
-  local Slider1 = MAINTAB:CreateSlider({
-    Name = "Hitbox",
-    Range = {0, 100},
-    Increment = 2,
-    Suffix = "Size",
-    CurrentValue = 5,
-    Flag = "adjusthitbox",
-    Callback = function(Value)
-      functions.adjustflyspeed(Value)
-    end,
-  })
 end
 
 return createui
