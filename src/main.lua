@@ -35,20 +35,25 @@ local function renameFallDamageEvent(rename)
     end
 end
 
-local function resetCharacterCollisions()
-    for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = true
-        end
-    end
-end
-
 local function resetCharacterAppearance()
     humanoid.PlatformStand = false
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
     humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-    humanoidRootPart.Size = Vector3.new(2, 2, 1)
+    if humanoidRootPart then
+        humanoidRootPart.CanCollide = true
+        humanoidRootPart.Velocity = Vector3.zero
+        humanoidRootPart.RotVelocity = Vector3.zero
+    end
+end
+
+local function resetCharacterCollisions()
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+            part.Velocity = Vector3.zero
+        end
+    end
 end
 
 local function onCharacterAdded(newCharacter)
