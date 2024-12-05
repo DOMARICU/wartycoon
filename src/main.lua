@@ -8,7 +8,7 @@ local hitboxConnection
 
 local flySpeed = 12
 local sprintSpeedMultiplier = 1.5
-local hitboxSize = 5
+local hitboxSize = 50
 
 local player = game.Players.LocalPlayer
 local Players = game:GetService("Players")
