@@ -35,11 +35,21 @@ local function renameFallDamageEvent(rename)
     end
 end
 
+local function resetCharacterCollisions()
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+            part.Size = Vector3.new(1, 1, 1)
+        end
+    end
+end
+
 local function onCharacterAdded(newCharacter)
     character = newCharacter
     humanoid = character:WaitForChild("Humanoid")
     humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
     functions.noclip(false)
+    resetCharacterCollisions()
     isFlying = false
 end
 player.CharacterAdded:Connect(onCharacterAdded)
@@ -60,11 +70,7 @@ function functions.noclip(value)
             noclipConnection:Disconnect()
             noclipConnection = nil
         end
-        for _, part in ipairs(character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = true
-            end
-        end
+        resetCharacterCollisions()
     end
 end
 
@@ -133,11 +139,7 @@ function functions.fly(value)
         if FlyBodyVelocity then FlyBodyVelocity:Destroy() FlyBodyVelocity = nil end
         if flyConnection then flyConnection:Disconnect() flyConnection = nil end
 
-        for _, part in ipairs(character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = true
-            end
-        end
+        resetCharacterCollisions()
     end
 end
 
