@@ -7,7 +7,6 @@ local sprintSpeedMultiplier = 1.5
 local player = game.Players.LocalPlayer
 local character = player.Character or workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
-local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
@@ -66,10 +65,10 @@ function functions.fly(value)
         local BG = Instance.new("BodyGyro")
         local BV = Instance.new("BodyVelocity")
         BG.P = 9e4
-        BG.Parent = humanoidRootPart
-        BV.Parent = humanoidRootPart
+        BG.Parent = humanoid
+        BV.Parent = humanoid
         BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-        BG.CFrame = humanoidRootPart.CFrame
+        BG.CFrame = humanoid.CFrame
         BV.Velocity = Vector3.new(0, 0, 0)
         BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 
@@ -129,7 +128,6 @@ end
 player.CharacterAdded:Connect(function(newCharacter)
     character = newCharacter
     humanoid = character:WaitForChild("Humanoid")
-    humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
     resetCharacter()
     isFlying = false
 end)
