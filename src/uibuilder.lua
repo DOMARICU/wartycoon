@@ -77,7 +77,7 @@ function createui.addelements(Window)
 
   local Slider1 = MAINTAB:CreateSlider({
     Name = "Hitbox",
-    Range = {0, 20},
+    Range = {0, 100},
     Increment = 2,
     Suffix = "Size",
     CurrentValue = 5,
