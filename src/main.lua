@@ -44,6 +44,13 @@ local function resetCharacterCollisions()
     end
 end
 
+local function resetCharacterAppearance()
+    humanoid.PlatformStand = false
+    humanoid.WalkSpeed = 16
+    humanoid.JumpPower = 50
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+end
+
 local function onCharacterAdded(newCharacter)
     character = newCharacter
     humanoid = character:WaitForChild("Humanoid")
@@ -129,9 +136,6 @@ function functions.fly(value)
     elseif not value and isFlying then
         isFlying = false
 
-        humanoid.PlatformStand = false
-        humanoid.WalkSpeed = 16
-        humanoid.JumpPower = 50
         functions.noclip(false)
         renameFallDamageEvent(false)
 
@@ -140,6 +144,7 @@ function functions.fly(value)
         if flyConnection then flyConnection:Disconnect() flyConnection = nil end
 
         resetCharacterCollisions()
+        resetCharacterAppearance()
     end
 end
 
