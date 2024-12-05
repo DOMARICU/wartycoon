@@ -39,7 +39,6 @@ local function resetCharacterCollisions()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
             part.CanCollide = true
-            part.Size = Vector3.new(1, 1, 1)
         end
     end
 end
@@ -48,7 +47,8 @@ local function resetCharacterAppearance()
     humanoid.PlatformStand = false
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
-    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    humanoid:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+    humanoid:Move(Vector3.new(0, 0, 0), true)
 end
 
 local function onCharacterAdded(newCharacter)
