@@ -9,7 +9,7 @@ local sprintSpeedMultiplier = 1.5
 local hitboxSize = 5
 
 local player = game.Players.LocalPlayer
-local Players = game:GEtService("Players")
+local Players = game:GetService("Players")
 local character = player.Character or workspace:WaitForChild(player.Name)
 local humanoid = character:WaitForChild("Humanoid")
 local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
