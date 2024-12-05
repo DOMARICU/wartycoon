@@ -66,7 +66,7 @@ function createui.addelements(Window)
     end,
   })
 
-  local Toggle = RAGE:CreateToggle({
+  local Toggle = RAGETAB:CreateToggle({
     Name = "Hitbox",
     CurrentValue = false,
     Flag = "hitbx",
