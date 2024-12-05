@@ -130,6 +130,12 @@ function functions.fly(value)
         if flyConnection then flyConnection:Disconnect() flyConnection = nil end
         if flyKeyDown then flyKeyDown:Disconnect() flyKeyDown = nil end
         if flyKeyUp then flyKeyUp:Disconnect() flyKeyUp = nil end
+        
+        for _, instance in ipairs(humanoidRootPart:GetChildren()) do
+            if instance:IsA("BodyGyro") or instance:IsA("BodyVelocity") then
+                instance:Destroy()
+            end
+        end
     end
 end
 
