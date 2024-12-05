@@ -13,6 +13,7 @@ local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local flyKeyDown, flyKeyUp
 local FlyBodyGyro
 local FlyBodyVelocity
 local flyConnection
@@ -47,9 +48,9 @@ local function resetCharacterAppearance()
     humanoid.PlatformStand = false
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
-    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp) -- Reset state to standard
-    humanoidRootPart.Velocity = Vector3.zero -- Stop movement
-    humanoidRootPart.RotVelocity = Vector3.zero -- Stop rotational movement
+    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    humanoidRootPart.Velocity = Vector3.zero
+    humanoidRootPart.RotVelocity = Vector3.zero
 end
 
 local function onCharacterAdded(newCharacter)
@@ -88,21 +89,22 @@ function functions.fly(value)
         isFlying = true
 
         humanoid.PlatformStand = true
-        humanoid.WalkSpeed = 0  -- Prevent walking sounds
-        humanoid.JumpPower = 0 -- Prevent jumping
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
         functions.noclip(true)
         renameFallDamageEvent(true)
 
+        local T = humanoidRootPart
         FlyBodyGyro = Instance.new("BodyGyro")
         FlyBodyGyro.P = 9e4
         FlyBodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-        FlyBodyGyro.CFrame = humanoidRootPart.CFrame
-        FlyBodyGyro.Parent = humanoidRootPart
+        FlyBodyGyro.CFrame = T.CFrame
+        FlyBodyGyro.Parent = T
 
         FlyBodyVelocity = Instance.new("BodyVelocity")
         FlyBodyVelocity.Velocity = Vector3.zero
         FlyBodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-        FlyBodyVelocity.Parent = humanoidRootPart
+        FlyBodyVelocity.Parent = T
 
         flyConnection = RunService.RenderStepped:Connect(function()
             local direction = Vector3.zero
