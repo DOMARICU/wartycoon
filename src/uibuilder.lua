@@ -1,6 +1,6 @@
 local createui = {}
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-local functions = loadstring(game:HttpGet("https://raw.githubusercontent.com/DOMARICU/wartycoon/refs/heads/main/functions.lua"))()
+local functions = loadstring(game:HttpGet("https://raw.githubusercontent.com/DOMARICU/wartycoon/refs/heads/main/src/main.lua"))()
 
 function createui.start()
   local Window = Rayfield:CreateWindow({
