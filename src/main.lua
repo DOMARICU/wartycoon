@@ -11,12 +11,11 @@ local humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or charact
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
-local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+local CONTROL = {F = 0, B = 0, L = 0, R = 0}
+local lCONTROL = {F = 0, B = 0, L = 0, R = 0}
 local SPEED = 0
-local flyConnection, flyKeyDown, flyKeyUp
+local flyConnection, flyKeyDown, flyKeyUp, noclipConnection
 local originalFDMGName = "FDMG"
 
 local function renameFallDamageEvent(rename)
@@ -33,6 +32,19 @@ local function renameFallDamageEvent(rename)
     end
 end
 
+local function resetCharacter()
+    if noclipConnection then
+        noclipConnection:Disconnect()
+        noclipConnection = nil
+    end
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+        end
+    end
+    humanoid.PlatformStand = false
+    renameFallDamageEvent(false)
+end
 
 function functions.fly(value)
     if value and not isFlying then
@@ -40,8 +52,7 @@ function functions.fly(value)
 
         humanoid.PlatformStand = true
         renameFallDamageEvent(true)
-        isNoclip = true
-        RunService.Stepped:Connect(function()
+        noclipConnection = RunService.Stepped:Connect(function()
             for _, part in ipairs(character:GetDescendants()) do
                 if part:IsA("BasePart") and part.CanCollide then
                     part.CanCollide = false
@@ -105,20 +116,20 @@ function functions.fly(value)
     elseif not value and isFlying then
         isFlying = false
 
-        humanoid.PlatformStand = false
-        renameFallDamageEvent(false)
-        isNoclip = false
+        resetCharacter()
         if flyConnection then flyConnection:Disconnect() flyConnection = nil end
         if flyKeyDown then flyKeyDown:Disconnect() flyKeyDown = nil end
         if flyKeyUp then flyKeyUp:Disconnect() flyKeyUp = nil end
-
-        for _, part in ipairs(character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = true
-            end
-        end
     end
 end
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    humanoid = character:WaitForChild("Humanoid")
+    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    resetCharacter()
+    isFlying = false
+end)
 
 function functions.adjustflyspeed(speed)
     if type(speed) == "number" and speed > 0 then
