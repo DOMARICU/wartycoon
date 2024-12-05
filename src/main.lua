@@ -13,13 +13,10 @@ local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local flyKeyDown, flyKeyUp
-local FlyBodyGyro
-local FlyBodyVelocity
-local flyConnection
-local noclipConnection
 local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
 local SPEED = 0
+local flyConnection, flyKeyDown, flyKeyUp
 local originalFDMGName = "FDMG"
 
 local function renameFallDamageEvent(rename)
@@ -36,119 +33,97 @@ local function renameFallDamageEvent(rename)
     end
 end
 
-local function resetCharacterCollisions()
-    for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = true
-        end
-    end
-end
-
-local function resetCharacterAppearance()
-    humanoid.PlatformStand = false
-    humanoid.WalkSpeed = 16
-    humanoid.JumpPower = 50
-    humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-    humanoidRootPart.Velocity = Vector3.zero
-    humanoidRootPart.RotVelocity = Vector3.zero
-end
-
-local function onCharacterAdded(newCharacter)
-    character = newCharacter
-    humanoid = character:WaitForChild("Humanoid")
-    humanoidRootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart")
-    functions.noclip(false)
-    resetCharacterCollisions()
-    resetCharacterAppearance()
-    isFlying = false
-end
-player.CharacterAdded:Connect(onCharacterAdded)
-
-function functions.noclip(value)
-    if value and not isNoclip then
-        isNoclip = true
-        noclipConnection = RunService.Stepped:Connect(function()
-            for _, part in ipairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
-            end
-        end)
-    elseif not value and isNoclip then
-        isNoclip = false
-        if noclipConnection then
-            noclipConnection:Disconnect()
-            noclipConnection = nil
-        end
-        resetCharacterCollisions()
-    end
-end
-
 function functions.fly(value)
     if value and not isFlying then
         isFlying = true
 
         humanoid.PlatformStand = true
-        humanoid.WalkSpeed = 0
-        humanoid.JumpPower = 0
-        functions.noclip(true)
         renameFallDamageEvent(true)
+        isNoclip = true
+        RunService.Stepped:Connect(function()
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") and part.CanCollide then
+                    part.CanCollide = false
+                end
+            end
+        end)
 
-        local T = humanoidRootPart
-        FlyBodyGyro = Instance.new("BodyGyro")
-        FlyBodyGyro.P = 9e4
-        FlyBodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-        FlyBodyGyro.CFrame = T.CFrame
-        FlyBodyGyro.Parent = T
-
-        FlyBodyVelocity = Instance.new("BodyVelocity")
-        FlyBodyVelocity.Velocity = Vector3.zero
-        FlyBodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-        FlyBodyVelocity.Parent = T
+        local BG = Instance.new("BodyGyro")
+        local BV = Instance.new("BodyVelocity")
+        BG.P = 9e4
+        BG.Parent = humanoidRootPart
+        BV.Parent = humanoidRootPart
+        BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+        BG.CFrame = humanoidRootPart.CFrame
+        BV.Velocity = Vector3.new(0, 0, 0)
+        BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 
         flyConnection = RunService.RenderStepped:Connect(function()
-            local direction = Vector3.zero
-
-            if userInputService:IsKeyDown(Enum.KeyCode.W) then
-                direction += camera.CFrame.LookVector
+            if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+                SPEED = flySpeed
+            elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0) and SPEED ~= 0 then
+                SPEED = 0
             end
-            if userInputService:IsKeyDown(Enum.KeyCode.S) then
-                direction -= camera.CFrame.LookVector
-            end
-            if userInputService:IsKeyDown(Enum.KeyCode.A) then
-                direction -= camera.CFrame.RightVector
-            end
-            if userInputService:IsKeyDown(Enum.KeyCode.D) then
-                direction += camera.CFrame.RightVector
-            end
-            if userInputService:IsKeyDown(Enum.KeyCode.Space) then
-                direction += Vector3.new(0, 1, 0)
-            end
-
-            local newSpeed = flySpeed
-            if userInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-                newSpeed = flySpeed * sprintSpeedMultiplier
-            end
-
-            if direction.Magnitude > 0 then
-                FlyBodyVelocity.Velocity = direction.Unit * newSpeed
+            if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B ~= 0) or (CONTROL.Q + CONTROL.E ~= 0) then
+                BV.Velocity = ((camera.CFrame.LookVector * (CONTROL.F + CONTROL.B)) + ((camera.CFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
+                lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
+            elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and (CONTROL.Q + CONTROL.E == 0) and SPEED ~= 0 then
+                BV.Velocity = ((camera.CFrame.LookVector * (lCONTROL.F + lCONTROL.B)) + ((camera.CFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
             else
-                FlyBodyVelocity.Velocity = Vector3.zero
+                BV.Velocity = Vector3.new(0, 0, 0)
             end
-            FlyBodyGyro.CFrame = camera.CFrame
+            BG.CFrame = camera.CFrame
         end)
+
+        flyKeyDown = userInputService.InputBegan:Connect(function(input)
+            local KEY = input.KeyCode
+            if KEY == Enum.KeyCode.W then
+                CONTROL.F = flySpeed
+            elseif KEY == Enum.KeyCode.S then
+                CONTROL.B = -flySpeed
+            elseif KEY == Enum.KeyCode.A then
+                CONTROL.L = -flySpeed
+            elseif KEY == Enum.KeyCode.D then
+                CONTROL.R = flySpeed
+            elseif KEY == Enum.KeyCode.E then
+                CONTROL.Q = flySpeed * 2
+            elseif KEY == Enum.KeyCode.Q then
+                CONTROL.E = -flySpeed * 2
+            end
+        end)
+
+        flyKeyUp = userInputService.InputEnded:Connect(function(input)
+            local KEY = input.KeyCode
+            if KEY == Enum.KeyCode.W then
+                CONTROL.F = 0
+            elseif KEY == Enum.KeyCode.S then
+                CONTROL.B = 0
+            elseif KEY == Enum.KeyCode.A then
+                CONTROL.L = 0
+            elseif KEY == Enum.KeyCode.D then
+                CONTROL.R = 0
+            elseif KEY == Enum.KeyCode.E then
+                CONTROL.Q = 0
+            elseif KEY == Enum.KeyCode.Q then
+                CONTROL.E = 0
+            end
+        end)
+
     elseif not value and isFlying then
         isFlying = false
 
-        functions.noclip(false)
+        humanoid.PlatformStand = false
         renameFallDamageEvent(false)
-
-        if FlyBodyGyro then FlyBodyGyro:Destroy() FlyBodyGyro = nil end
-        if FlyBodyVelocity then FlyBodyVelocity:Destroy() FlyBodyVelocity = nil end
+        isNoclip = false
         if flyConnection then flyConnection:Disconnect() flyConnection = nil end
+        if flyKeyDown then flyKeyDown:Disconnect() flyKeyDown = nil end
+        if flyKeyUp then flyKeyUp:Disconnect() flyKeyUp = nil end
 
-        resetCharacterCollisions()
-        resetCharacterAppearance()
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = true
+            end
+        end
     end
 end
 
