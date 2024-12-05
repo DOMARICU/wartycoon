@@ -33,6 +33,7 @@ local function renameFallDamageEvent(rename)
     end
 end
 
+
 function functions.fly(value)
     if value and not isFlying then
         isFlying = true
@@ -59,16 +60,16 @@ function functions.fly(value)
         BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
 
         flyConnection = RunService.RenderStepped:Connect(function()
-            if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+            if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 then
                 SPEED = flySpeed
-            elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0) and SPEED ~= 0 then
+            elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0) and SPEED ~= 0 then
                 SPEED = 0
             end
-            if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B ~= 0) or (CONTROL.Q + CONTROL.E ~= 0) then
-                BV.Velocity = ((camera.CFrame.LookVector * (CONTROL.F + CONTROL.B)) + ((camera.CFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
+            if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B ~= 0) then
+                BV.Velocity = ((camera.CFrame.LookVector * (CONTROL.F + CONTROL.B)) + ((camera.CFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
                 lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
-            elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and (CONTROL.Q + CONTROL.E == 0) and SPEED ~= 0 then
-                BV.Velocity = ((camera.CFrame.LookVector * (lCONTROL.F + lCONTROL.B)) + ((camera.CFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
+            elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and SPEED ~= 0 then
+                BV.Velocity = ((camera.CFrame.LookVector * (lCONTROL.F + lCONTROL.B)) + ((camera.CFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B) * 0.2, 0).p) - camera.CFrame.p)) * SPEED
             else
                 BV.Velocity = Vector3.new(0, 0, 0)
             end
@@ -85,10 +86,6 @@ function functions.fly(value)
                 CONTROL.L = -flySpeed
             elseif KEY == Enum.KeyCode.D then
                 CONTROL.R = flySpeed
-            elseif KEY == Enum.KeyCode.E then
-                CONTROL.Q = flySpeed * 2
-            elseif KEY == Enum.KeyCode.Q then
-                CONTROL.E = -flySpeed * 2
             end
         end)
 
@@ -102,10 +99,6 @@ function functions.fly(value)
                 CONTROL.L = 0
             elseif KEY == Enum.KeyCode.D then
                 CONTROL.R = 0
-            elseif KEY == Enum.KeyCode.E then
-                CONTROL.Q = 0
-            elseif KEY == Enum.KeyCode.Q then
-                CONTROL.E = 0
             end
         end)
 
