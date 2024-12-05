@@ -22,9 +22,14 @@ function blockFallDamage()
     local Events = ACS_Engine:WaitForChild("Events")
     local FDMG = Events:WaitForChild("FDMG")
 
-    FDMGConnection = FDMG.OnClientEvent:Connect(function()
+    FDMGConnection = FDMG.OnClientEvent:Connect(function(damage)
         if isFlying then
-            return
+            local args = {
+                [1] = 0
+            }
+            FDMG:FireServer(unpack(args))
+        else
+            FDMG:FireServer(damage)
         end
     end)
 end
