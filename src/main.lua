@@ -5,6 +5,8 @@ local isNoclip = false
 local hitboxEnabled = false
 local autocratefarm = false
 
+local dbger = false
+
 local hitboxConnection
 
 local flySpeed = 12
@@ -216,7 +218,7 @@ function functions.cratefarming(value)
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
                 wait(1)
             else
-                warn("Player HumanoidRootPart not found.")
+                functions.debugmode("warn", "Player HumanoidRootPart not found.")
             end
         end
 
@@ -224,10 +226,10 @@ function functions.cratefarming(value)
             if prompt and prompt:IsA("ProximityPrompt") then
                 print("Activating ProximityPrompt: " .. prompt.Name)
                 prompt:InputHoldBegin()
-                wait(prompt.HoldDuration or 0.5)
+                wait(prompt.HoldDuration or 0.8)
                 prompt:InputHoldEnd()
             else
-                warn("Invalid or missing ProximityPrompt.")
+                functions.debugmode("warn", "Invalid or missing ProximityPrompt.")
             end
         end
 
@@ -239,10 +241,10 @@ function functions.cratefarming(value)
                     teleportTo(crate.Position)
                     activatePrompt(stealPrompt)
                 else
-                    warn("StealPrompt not found in Tank Crate.")
+                    functions.debugmode("warn", "StealPrompt not found in Tank Crate.")
                 end
             else
-                warn("Tank Crate is nil.")
+                functions.debugmode("warn", "Tank Crate is nil.")
             end
         end
 
@@ -255,21 +257,21 @@ function functions.cratefarming(value)
                 if collectorPart then
                     local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
                     if sellPrompt then
-                        print("Teleporting to Crate Collector.")
+                        functions.debugmode("print", "Teleporting to Crate Collector.")
                         teleportTo(collectorPart.Position)
                         activatePrompt(sellPrompt)
                     else
-                        warn("SellPrompt not found in Crate Collector.")
+                        functions.debugmode("warn", "SellPrompt not found in Crate Collector.")
                     end
                 else
-                    warn("Collector part not found for team: " .. tostring(teamValue))
+                    functions.debugmode("warn", "Collector part not found for team: " .. tostring(teamValue))
                 end
             else
-                warn("Tycoon not found for team: " .. tostring(teamValue))
+                functions.debugmode("warn", "Tycoon not found for team: " .. tostring(teamValue))
             end
         end
 
-        print("Crate farming enabled.")
+        functions.debugmode("print", "Crate farming enabled.")
 
         while autocratefarm do
             local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
@@ -282,44 +284,52 @@ function functions.cratefarming(value)
             end
 
             if #crates == 0 then
-                print("No Tank Crates available. Waiting...")
+                functions.debugmode("print", "No Tank Crates available. Waiting...")
                 wait(2)
             else
                 for index, crate in ipairs(crates) do
                     if not autocratefarm then
-                        print("Farming disabled mid-process. Stopping...")
+                        functions.debugmode("print", "Farming disabled mid-process. Stopping...")
                         break
                     end
 
-                    print("Starting process for Tank Crate #" .. index)
+                    functions.debugmode("print", "Starting process for Tank Crate #" .. index)
                     processTankCrate(crate)
                     sellCrate()
                 end
             end
         end
 
-        print("Farming disabled. Returning to origin position.")
+        functions.debugmode("print", "Farming disabled. Returning to origin position.")
         teleportTo(player.Character.HumanoidRootPart.Position)
 
     elseif not value and autocratefarm then
         autocratefarm = false
-        print("Crate farming disabled.")
+        functions.debugmode("print", "Crate farming disabled.")
     end
   end
 
 ------------------------------------LOGGER-------------------------------
 
---[[ function functions.debugmode(val)
-    if val then
-        
+function functions.debugmode(type, val)
+    if dbger then
+        if type and val then
+            if type == "warn" then
+                warn("[WARN]: " .. tostring(val))
+            elseif type == "success" then
+                print("[SUCCESS]: " .. tostring(val))
+            elseif type == "error" then
+                error("[ERROR]: " .. tostring(val))
+            elseif type == "print" then
+                print("[LOG]: " .. tostring(val))
+            else
+                warn("[UNKNOWN TYPE]: " .. tostring(type) .. " with value: " .. tostring(val))
+            end
+        else
+            print("[DEBUG]: Type or value cannot be found! Type: " .. tostring(type) .. ", Value: " .. tostring(val))
+        end
     end
 end
 
-function functions.logger(type, err)
-    if type == "warn" then
-        elseif type == "print" then
-        elseif type == "Success" then
-    end
-end *]]
 
 return functions
