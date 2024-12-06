@@ -214,9 +214,13 @@ end
 ------------------AIMBOT---------------
 
 function functions.aimhelper(value)
+    local aimbotEnabled = false
+    local userInputService = game:GetService("UserInputService")
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
 
     local function getNearestPlayer()
-        local localCharacter = player.Character
+        local localCharacter = localPlayer.Character
         local localHumanoidRootPart = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
 
         if not localHumanoidRootPart then
@@ -226,14 +230,17 @@ function functions.aimhelper(value)
         local nearestPlayer = nil
         local shortestDistance = math.huge
 
-        for _, player in pairs(Players:GetPlayers()) do
-            if player ~= player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        for _, player in pairs(players:GetPlayers()) do
+            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 local targetHumanoidRootPart = player.Character.HumanoidRootPart
-                local distance = (localHumanoidRootPart.Position - targetHumanoidRootPart.Position).Magnitude
+                
+                if targetHumanoidRootPart:IsDescendantOf(workspace) then
+                    local distance = (localHumanoidRootPart.Position - targetHumanoidRootPart.Position).Magnitude
 
-                if distance < shortestDistance then
-                    shortestDistance = distance
-                    nearestPlayer = targetHumanoidRootPart
+                    if distance < shortestDistance then
+                        shortestDistance = distance
+                        nearestPlayer = targetHumanoidRootPart
+                    end
                 end
             end
         end
