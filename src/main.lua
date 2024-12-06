@@ -375,6 +375,7 @@ local rebirthstages = {
     ["Vietnam Unlock Rebirth 4"] = 4,
     ["Helicopters [3 Rebirths]"] = 3,
     ["Boats [3 Rebirths]"] = 3,
+    ["Trading Hub [1 Rebirth]"] = 1,
 }
 
 function functions.autobuilding(val)
