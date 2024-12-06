@@ -227,7 +227,7 @@ function functions.cratefarming(value)
         if prompt and prompt:IsA("ProximityPrompt") then
             print("Activating ProximityPrompt: " .. prompt.Name)
             prompt:InputHoldBegin()
-            wait(prompt.HoldDuration or 0.5)
+            wait(prompt.HoldDuration or 0.8)
             prompt:InputHoldEnd()
         else
             warn("Invalid or missing ProximityPrompt.")
@@ -273,7 +273,13 @@ function functions.cratefarming(value)
     end
 
     print("Crate farming enabled.")
+
     while farmingEnabled do
+        if not farmingEnabled then
+            print("Farming disabled mid-loop. Stopping...")
+            break
+        end
+
         local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
         local crates = {}
 
@@ -290,7 +296,7 @@ function functions.cratefarming(value)
             for index, crate in ipairs(crates) do
                 if not farmingEnabled then
                     print("Farming disabled mid-process. Stopping...")
-                    return
+                    break
                 end
 
                 print("Starting process for Tank Crate #" .. index)
@@ -306,7 +312,7 @@ end
 
 ------------------------------------LOGGER-------------------------------
 
-function functions.debugmode(val)
+--[[ function functions.debugmode(val)
     if val then
         
     end
@@ -317,6 +323,6 @@ function functions.logger(type, err)
         elseif type == "print" then
         elseif type == "Success" then
     end
-end
+end *]]
 
 return functions
