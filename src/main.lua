@@ -254,7 +254,7 @@ function functions.cratefarming(value)
         local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
 
         if tycoon then
-            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):FindFirstChild("DiamondPlate")
+            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
             if collectorPart then
                 local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
                 if sellPrompt then
