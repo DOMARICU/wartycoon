@@ -417,7 +417,7 @@ function functions.autobuilding(val)
                 local requiredRebirth = rebirthstages[button.Name]
                 if requiredRebirth and rebirths.Value < requiredRebirth then
                     print("Skipping " .. button.Name .. " - requires rebirth level " .. requiredRebirth)
-                    break
+                    continue
                 end
 
                 local priceTag = button:FindFirstChild("Price")
@@ -429,7 +429,7 @@ function functions.autobuilding(val)
                             local targetPosition = part.Position + Vector3.new(0, 7, 0)
                             if player.Character and player.Character.PrimaryPart then
                                 player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-                                wait(0.8)
+                                wait(0.4)
                             end
                         end
                     else
@@ -438,12 +438,15 @@ function functions.autobuilding(val)
                 else
                     print("Price not found in button " .. button.Name)
                 end
+                wait(0.1)
             end
 
             if not autobuy then
                 print("Autobuy disabled mid-loop. Exiting...")
                 break
             end
+
+            wait(0.1)
         end
 
         if initialPosition and player.Character and player.Character.PrimaryPart then
