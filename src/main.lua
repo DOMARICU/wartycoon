@@ -282,6 +282,39 @@ function functions.aimhelper(value)
     end
 end
 
+------------------SPINBOT---------------
+
+function functions.spinbot(value)
+    local spinbotEnabled = false
+    local runService = game:GetService("RunService")
+    local player = game:GetService("Players").LocalPlayer
+
+    if value and not spinbotEnabled then
+        spinbotEnabled = true
+        print("Spinbot activated.")
+
+        -- Spinbot-Logik
+        local connection
+        connection = runService.Heartbeat:Connect(function()
+            if not spinbotEnabled then
+                connection:Disconnect()
+                print("Spinbot deactivated.")
+                return
+            end
+
+            local character = player.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(5), 0)
+            end
+        end)
+
+    elseif not value and spinbotEnabled then
+        spinbotEnabled = false
+        print("Spinbot deactivated.")
+    end
+end
+
 -------------------FARMING--------------
 function functions.cratefarming(value)
     if value and not autocratefarm then
