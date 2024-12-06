@@ -248,6 +248,11 @@ function functions.aimhelper(value)
         return nearestPlayer
     end
 
+    local function isFirstPerson()
+        local camera = workspace.CurrentCamera
+        return (camera.CFrame.Position - camera.Focus.Position).Magnitude < 1
+    end
+
     if value and not aimbotEnabled then
         aimbotEnabled = true
         print("Aimbot activated.")
@@ -257,11 +262,13 @@ function functions.aimhelper(value)
 
             if input.UserInputType == Enum.UserInputType.MouseButton2 then
                 while aimbotEnabled and userInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) do
-                    local nearestTarget = getNearestPlayer()
+                    if isFirstPerson() then 
+                        local nearestTarget = getNearestPlayer()
 
-                    if nearestTarget then
-                        local camera = workspace.CurrentCamera
-                        camera.CFrame = CFrame.new(camera.CFrame.Position, nearestTarget.Position)
+                        if nearestTarget then
+                            local camera = workspace.CurrentCamera
+                            camera.CFrame = CFrame.new(camera.CFrame.Position, nearestTarget.Position)
+                        end
                     end
 
                     wait(0.03)
