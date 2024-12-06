@@ -74,6 +74,15 @@ function createui.addelements(Window)
       functions.hitbox(Value)
     end,
   })
+
+  local Toggle2 = INFOTAB:CreateToggle({
+    Name = "Auto Crate Farm",
+    CurrentValue = false,
+    Flag = "acfarm",
+    Callback = function(Value)
+      functions.cratefarming(Value)
+    end,
+  })
 end
 
 return createui
