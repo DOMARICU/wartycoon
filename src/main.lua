@@ -208,7 +208,19 @@ end
 
 -------------------FARMING--------------
 function functions.cratefarming(value)
-    local farmingEnabled = value
+    local Workspace = game:GetService("Workspace")
+    local Players = game:GetService("Players")
+
+    local player = Players.LocalPlayer
+    local farmingEnabled = false
+
+    if value then
+        farmingEnabled = true
+    else
+        farmingEnabled = false
+        print("Crate farming disabled.")
+        return
+    end
 
     local function teleportTo(position)
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -250,7 +262,7 @@ function functions.cratefarming(value)
         local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
 
         if tycoon then
-            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
+            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):FindFirstChild("DiamondPlate")
             if collectorPart then
                 local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
                 if sellPrompt then
@@ -268,39 +280,36 @@ function functions.cratefarming(value)
         end
     end
 
-    if farmingEnabled then
-        print("Crate farming enabled.")
-        while farmingEnabled do
-            local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
-            local crates = {}
+    print("Crate farming enabled.")
+    while farmingEnabled do
+        local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
+        local crates = {}
 
-            for _, object in ipairs(crateFolder:GetDescendants()) do
-                if object:IsA("MeshPart") and object.Name == "Tank Crate" then
-                    table.insert(crates, object)
-                end
-            end
-
-            if #crates == 0 then
-                print("No Tank Crates available. Waiting...")
-                wait(2)
-            else
-                for index, crate in ipairs(crates) do
-                    if not farmingEnabled then
-                        break
-                    end
-
-                    print("Starting process for Tank Crate #" .. index)
-                    processTankCrate(crate)
-                    sellCrate()
-                end
+        for _, object in ipairs(crateFolder:GetDescendants()) do
+            if object:IsA("MeshPart") and object.Name == "Tank Crate" then
+                table.insert(crates, object)
             end
         end
 
-        print("Farming disabled. Returning to origin position.")
-        teleportTo(player.Character.HumanoidRootPart.Position)
-    else
-        print("Crate farming disabled.")
+        if #crates == 0 then
+            print("No Tank Crates available. Waiting...")
+            wait(2)
+        else
+            for index, crate in ipairs(crates) do
+                if not farmingEnabled then
+                    print("Farming disabled mid-process. Stopping...")
+                    return
+                end
+
+                print("Starting process for Tank Crate #" .. index)
+                processTankCrate(crate)
+                sellCrate()
+            end
+        end
     end
+
+    print("Farming disabled. Returning to origin position.")
+    teleportTo(player.Character.HumanoidRootPart.Position)
 end
 
 return functions
