@@ -364,11 +364,20 @@ function functions.cratefarming(value)
     "Javelin Giver",
 }
 
-  function functions.autobuilding(val)
+local rebirthstages = {
+    ["Easter Egg [10 Rebirths]"] = 10,
+    ["Planes [7 Rebirths]"] = 7,
+    ["Tank Unlock Rebirth 6"] = 6,
+    ["Drone [5 Rebirths]"] = 5,
+    -- Weitere Einträge...
+}
+
+function functions.autobuilding(val)
     local player = game:GetService("Players").LocalPlayer
     local leaderstats = player:WaitForChild("leaderstats")
     local teamName = leaderstats:WaitForChild("Team").Value
     local cash = leaderstats:WaitForChild("Cash")
+    local rebirths = leaderstats:WaitForChild("Rebirths")
 
     local unpurchasedButtons = workspace.Tycoon.Tycoons:FindFirstChild(teamName):FindFirstChild("UnpurchasedButtons")
     if not unpurchasedButtons then
@@ -399,16 +408,22 @@ function functions.cratefarming(value)
                     break
                 end
 
+                local requiredRebirth = rebirthstages[button.Name]
+                if requiredRebirth and rebirths.Value < requiredRebirth then
+                    print("Skipping " .. button.Name .. " - requires rebirth level " .. requiredRebirth)
+                    continue
+                end
+
                 local priceTag = button:FindFirstChild("Price")
                 if priceTag and priceTag:IsA("IntValue") then
                     local price = priceTag.Value
                     if cash.Value >= price then
                         local part = button:FindFirstChild("Part")
                         if part and part:IsA("BasePart") then
-                            local targetPosition = part.Position + Vector3.new(0, 4, 0)
+                            local targetPosition = part.Position + Vector3.new(0, 7, 0)
                             if player.Character and player.Character.PrimaryPart then
                                 player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
-                                wait(0.5) -- Wartezeit für den Kaufprozess
+                                wait(0.8)
                             end
                         end
                     else
