@@ -197,7 +197,7 @@ function functions.hitbox(value)
                 local character = otherPlayer.Character
                 local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
                 if humanoidRootPart then
-                    humanoidRootPart.Size = Vector3.new(2, 2, 1) -- Default size
+                    humanoidRootPart.Size = Vector3.new(2, 2, 1)
                     humanoidRootPart.Transparency = 0
                     humanoidRootPart.CanCollide = true
                 end
@@ -212,15 +212,7 @@ function functions.cratefarming(value)
     local Players = game:GetService("Players")
 
     local player = Players.LocalPlayer
-    local farmingEnabled = false
-
-    if value then
-        farmingEnabled = true
-    else
-        farmingEnabled = false
-        print("Crate farming disabled.")
-        return
-    end
+    local farmingEnabled = value
 
     local function teleportTo(position)
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -262,7 +254,7 @@ function functions.cratefarming(value)
         local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
 
         if tycoon then
-            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
+            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):FindFirstChild("DiamondPlate")
             if collectorPart then
                 local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
                 if sellPrompt then
