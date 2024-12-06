@@ -370,6 +370,11 @@ local rebirthstages = {
     ["Tank Unlock Rebirth 6"] = 6,
     ["Drone [5 Rebirths]"] = 5,
     ["Missile Silo Start"] = 5,
+    ["Unlock Bunker and Missile Silo [2 Rebirth]"] = 2,
+    ["Vehicle Bay [1 Rebirth]"] = 1,
+    ["Vietnam Unlock Rebirth 4"] = 4,
+    ["Helicopters [3 Rebirths]"] = 3,
+    ["Boats [3 Rebirths]"] = 3,
 }
 
 function functions.autobuilding(val)
