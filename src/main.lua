@@ -41,7 +41,7 @@ local function renameFallDamageEvent(rename)
         if rename then
             FDMG.Name = "FDMG_Disabled"
         else
-            FDMG.Name = originalFDMGName
+            FDMG.Name = "FDMG"
         end
     end
 end
@@ -287,26 +287,24 @@ end
 function functions.spinbot(value)
     local spinbotEnabled = false
     local runService = game:GetService("RunService")
-    local player = game:GetService("Players").LocalPlayer
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
     if value and not spinbotEnabled then
         spinbotEnabled = true
         print("Spinbot activated.")
 
-        -- Spinbot-Logik
         local connection
-        connection = runService.Heartbeat:Connect(function()
+        connection = runService.Stepped:Connect(function(_, deltaTime)
             if not spinbotEnabled then
                 connection:Disconnect()
                 print("Spinbot deactivated.")
                 return
             end
 
-            local character = player.Character
-            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(5), 0)
-            end
+            humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(180 * deltaTime), 0)
         end)
 
     elseif not value and spinbotEnabled then
@@ -314,6 +312,7 @@ function functions.spinbot(value)
         print("Spinbot deactivated.")
     end
 end
+
 
 -------------------FARMING--------------
 function functions.cratefarming(value)
