@@ -304,4 +304,19 @@ function functions.cratefarming(value)
     teleportTo(player.Character.HumanoidRootPart.Position)
 end
 
+------------------------------------LOGGER-------------------------------
+
+function functions.debugmode(val)
+    if val then
+        
+    end
+end
+
+function functions.logger(type, err)
+    if type == "warn" then
+        elseif type == "print" then
+        elseif type == "Success" then
+    end
+end
+
 return functions
