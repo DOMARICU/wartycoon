@@ -65,6 +65,7 @@ local function resetCharacter()
 end
 
 function functions.fly(value)
+    functions.debugmode("print", "TEST!")
     if value and not isFlying then
         isFlying = true
 
