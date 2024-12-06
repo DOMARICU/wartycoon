@@ -75,6 +75,15 @@ function createui.addelements(Window)
     end,
   })
 
+  local Toggle4 = RAGETAB:CreateToggle({
+    Name = "AIMBOT",
+    CurrentValue = false,
+    Flag = "aimbtns",
+    Callback = function(Value)
+      functions.aimhelper(Value)
+    end,
+  })
+
   local Toggle2 = INFOTAB:CreateToggle({
     Name = "Auto Crate Farm",
     CurrentValue = false,

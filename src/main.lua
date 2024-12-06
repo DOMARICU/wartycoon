@@ -5,7 +5,7 @@ local isNoclip = false
 local hitboxEnabled = false
 local autocratefarm = false
 local autobuy = false
-
+local aimbotEnabled = false
 local dbger = false
 
 local hitboxConnection
@@ -24,6 +24,7 @@ local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local userInputService = game:GetService("UserInputService")
 
 local CONTROL = {F = 0, B = 0, L = 0, R = 0}
 local lCONTROL = {F = 0, B = 0, L = 0, R = 0}
@@ -207,6 +208,63 @@ function functions.hitbox(value)
                 end
             end
         end
+    end
+end
+
+------------------AIMBOT---------------
+
+function functions.aimhelper(value)
+
+    local function getNearestPlayer()
+        local localCharacter = player.Character
+        local localHumanoidRootPart = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
+
+        if not localHumanoidRootPart then
+            return nil
+        end
+
+        local nearestPlayer = nil
+        local shortestDistance = math.huge
+
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local targetHumanoidRootPart = player.Character.HumanoidRootPart
+                local distance = (localHumanoidRootPart.Position - targetHumanoidRootPart.Position).Magnitude
+
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    nearestPlayer = targetHumanoidRootPart
+                end
+            end
+        end
+
+        return nearestPlayer
+    end
+
+    if value and not aimbotEnabled then
+        aimbotEnabled = true
+        print("Aimbot activated.")
+
+        userInputService.InputBegan:Connect(function(input, gameProcessed)
+            if gameProcessed then return end
+
+            if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                while aimbotEnabled and userInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) do
+                    local nearestTarget = getNearestPlayer()
+
+                    if nearestTarget then
+                        local camera = workspace.CurrentCamera
+                        camera.CFrame = CFrame.new(camera.CFrame.Position, nearestTarget.Position)
+                    end
+
+                    wait(0.03)
+                end
+            end
+        end)
+
+    elseif not value and aimbotEnabled then
+        aimbotEnabled = false
+        print("Aimbot deactivated.")
     end
 end
 
