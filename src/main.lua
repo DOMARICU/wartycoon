@@ -4,6 +4,7 @@ local isFlying = false
 local isNoclip = false
 local hitboxEnabled = false
 local autocratefarm = false
+local autobuy = false
 
 local dbger = false
 
@@ -309,6 +310,130 @@ function functions.cratefarming(value)
         functions.debugmode("print", "Crate farming disabled.")
     end
   end
+
+  ---------------------------------AUTOBUILD----------------------------
+  local exceptions = {
+    --GAMEPASSES
+    "2x Cash Gamepass",
+    "2x Health Armor",
+    "MP7 Giver",
+    "USP 45 Giver",
+    "AK12 Giver",
+    "Saiga-12k Giver",
+    "Explosive Sniper Giver",
+    "FAL Heavy Giver",
+    "Desert Eagle Giver",
+    "AWP Giver",
+    "Remington ACR Giver",
+    "FAMAS Group Gun",
+    "Speedy Oil Extractor",
+    "Auto Collect Gamepass",
+    "10k Shield Health Gamepass",
+    "Speedy Humvee",
+    "VCAC Mephisto",
+    "BTR-80",
+    "A-10 Air Strike Giver",
+    "JLTV",
+    "Mi28 Havoc",
+    "Barrett M82",
+    "GTE Shirt",
+
+    --OPERATION
+    "Boxer CRV",
+    "LAV-AD",
+    "M1117 Guardian",
+    "Pantsir S1",
+    "M142 HIMARS",
+    "Lazar 3 APC",
+    "Patriot AA",
+    "Gunship",
+    "UH-60 Black Hawk",
+    "Super Stallion",
+    "AH-64 Apache",
+    "KA-52 Alligator",
+    "Eurocopter Tiger",
+    "Invictus",
+    "AH-1Z Viper",
+    "Raider X",
+    "Fairmile",
+    "PG-02",
+    "USS Douglas",
+    "Pr. 206",
+    "KSG 12 Giver",
+    "PP19 Bizon Giver",
+    "Javelin Giver",
+}
+
+  function functions.autobuilding(val)
+    local player = game:GetService("Players").LocalPlayer
+    local leaderstats = player:WaitForChild("leaderstats")
+    local teamName = leaderstats:WaitForChild("Team").Value
+    local cash = leaderstats:WaitForChild("Cash")
+
+    local unpurchasedButtons = workspace.Tycoon.Tycoons:FindFirstChild(teamName):FindFirstChild("UnpurchasedButtons")
+    if not unpurchasedButtons then
+        warn("UnpurchasedButtons folder not found for team " .. teamName)
+        return
+    end
+
+    if val and not autobuy then
+        autobuy = true
+        local initialPosition = player.Character and player.Character.PrimaryPart and player.Character.PrimaryPart.Position
+
+        while autobuy do
+            local buttons = {}
+            for _, button in ipairs(unpurchasedButtons:GetChildren()) do
+                if not table.find(exceptions, button.Name) then
+                    table.insert(buttons, button)
+                end
+            end
+
+            if #buttons == 0 then
+                print("No more buttons to purchase.")
+                break
+            end
+
+            for _, button in ipairs(buttons) do
+                if not autobuy then
+                    print("Autobuy disabled mid-process. Stopping...")
+                    break
+                end
+
+                local priceTag = button:FindFirstChild("Price")
+                if priceTag and priceTag:IsA("IntValue") then
+                    local price = priceTag.Value
+                    if cash.Value >= price then
+                        local part = button:FindFirstChild("Part")
+                        if part and part:IsA("BasePart") then
+                            local targetPosition = part.Position + Vector3.new(0, 4, 0)
+                            if player.Character and player.Character.PrimaryPart then
+                                player.Character:SetPrimaryPartCFrame(CFrame.new(targetPosition))
+                                wait(0.5) -- Wartezeit für den Kaufprozess
+                            end
+                        end
+                    else
+                        print("Not enough cash to buy " .. button.Name)
+                    end
+                else
+                    print("Price not found in button " .. button.Name)
+                end
+            end
+
+            if not autobuy then
+                print("Autobuy disabled mid-loop. Exiting...")
+                break
+            end
+        end
+
+        if initialPosition and player.Character and player.Character.PrimaryPart then
+            player.Character:SetPrimaryPartCFrame(CFrame.new(initialPosition))
+        end
+        autobuy = false
+    else
+        autobuy = false
+        print("Autobuy disabled.")
+    end
+end
 
 ------------------------------------LOGGER-------------------------------
 
