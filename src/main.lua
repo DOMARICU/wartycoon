@@ -208,107 +208,104 @@ end
 
 -------------------FARMING--------------
 function functions.cratefarming(value)
-    local Workspace = game:GetService("Workspace")
-    local Players = game:GetService("Players")
+    if value and not autocratefarm then
+        autocratefarm = true
 
-    local player = Players.LocalPlayer
-    local farmingEnabled = value
-
-    local function teleportTo(position)
-        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
-            wait(1)
-        else
-            warn("Player HumanoidRootPart not found.")
-        end
-    end
-
-    local function activatePrompt(prompt)
-        if prompt and prompt:IsA("ProximityPrompt") then
-            print("Activating ProximityPrompt: " .. prompt.Name)
-            prompt:InputHoldBegin()
-            wait(prompt.HoldDuration or 0.8)
-            prompt:InputHoldEnd()
-        else
-            warn("Invalid or missing ProximityPrompt.")
-        end
-    end
-
-    local function processTankCrate(crate)
-        if crate then
-            local stealPrompt = crate:FindFirstChild("StealPrompt")
-            if stealPrompt then
-                print("Processing Tank Crate at position: " .. tostring(crate.Position))
-                teleportTo(crate.Position)
-                activatePrompt(stealPrompt)
+        local function teleportTo(position)
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+                wait(1)
             else
-                warn("StealPrompt not found in Tank Crate.")
+                warn("Player HumanoidRootPart not found.")
             end
-        else
-            warn("Tank Crate is nil.")
         end
-    end
 
-    local function sellCrate()
-        local teamValue = player:WaitForChild("leaderstats"):WaitForChild("Team").Value
-        local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
+        local function activatePrompt(prompt)
+            if prompt and prompt:IsA("ProximityPrompt") then
+                print("Activating ProximityPrompt: " .. prompt.Name)
+                prompt:InputHoldBegin()
+                wait(prompt.HoldDuration or 0.5)
+                prompt:InputHoldEnd()
+            else
+                warn("Invalid or missing ProximityPrompt.")
+            end
+        end
 
-        if tycoon then
-            local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
-            if collectorPart then
-                local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
-                if sellPrompt then
-                    print("Teleporting to Crate Collector.")
-                    teleportTo(collectorPart.Position)
-                    activatePrompt(sellPrompt)
+        local function processTankCrate(crate)
+            if crate then
+                local stealPrompt = crate:FindFirstChild("StealPrompt")
+                if stealPrompt then
+                    print("Processing Tank Crate at position: " .. tostring(crate.Position))
+                    teleportTo(crate.Position)
+                    activatePrompt(stealPrompt)
                 else
-                    warn("SellPrompt not found in Crate Collector.")
+                    warn("StealPrompt not found in Tank Crate.")
                 end
             else
-                warn("Collector part not found for team: " .. tostring(teamValue))
-            end
-        else
-            warn("Tycoon not found for team: " .. tostring(teamValue))
-        end
-    end
-
-    print("Crate farming enabled.")
-
-    while farmingEnabled do
-        if not farmingEnabled then
-            print("Farming disabled mid-loop. Stopping...")
-            break
-        end
-
-        local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
-        local crates = {}
-
-        for _, object in ipairs(crateFolder:GetDescendants()) do
-            if object:IsA("MeshPart") and object.Name == "Tank Crate" then
-                table.insert(crates, object)
+                warn("Tank Crate is nil.")
             end
         end
 
-        if #crates == 0 then
-            print("No Tank Crates available. Waiting...")
-            wait(2)
-        else
-            for index, crate in ipairs(crates) do
-                if not farmingEnabled then
-                    print("Farming disabled mid-process. Stopping...")
-                    break
+        local function sellCrate()
+            local teamValue = player:WaitForChild("leaderstats"):WaitForChild("Team").Value
+            local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
+
+            if tycoon then
+                local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
+                if collectorPart then
+                    local sellPrompt = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("CratePromptPart"):FindFirstChild("SellPrompt")
+                    if sellPrompt then
+                        print("Teleporting to Crate Collector.")
+                        teleportTo(collectorPart.Position)
+                        activatePrompt(sellPrompt)
+                    else
+                        warn("SellPrompt not found in Crate Collector.")
+                    end
+                else
+                    warn("Collector part not found for team: " .. tostring(teamValue))
                 end
-
-                print("Starting process for Tank Crate #" .. index)
-                processTankCrate(crate)
-                sellCrate()
+            else
+                warn("Tycoon not found for team: " .. tostring(teamValue))
             end
         end
-    end
 
-    print("Farming disabled. Returning to origin position.")
-    teleportTo(player.Character.HumanoidRootPart.Position)
-end
+        print("Crate farming enabled.")
+
+        while autocratefarm do
+            local crateFolder = Workspace:WaitForChild("Game Systems"):WaitForChild("Crate Workspace")
+            local crates = {}
+
+            for _, object in ipairs(crateFolder:GetDescendants()) do
+                if object:IsA("MeshPart") and object.Name == "Tank Crate" then
+                    table.insert(crates, object)
+                end
+            end
+
+            if #crates == 0 then
+                print("No Tank Crates available. Waiting...")
+                wait(2)
+            else
+                for index, crate in ipairs(crates) do
+                    if not autocratefarm then
+                        print("Farming disabled mid-process. Stopping...")
+                        break
+                    end
+
+                    print("Starting process for Tank Crate #" .. index)
+                    processTankCrate(crate)
+                    sellCrate()
+                end
+            end
+        end
+
+        print("Farming disabled. Returning to origin position.")
+        teleportTo(player.Character.HumanoidRootPart.Position)
+
+    elseif not value and autocratefarm then
+        autocratefarm = false
+        print("Crate farming disabled.")
+    end
+  end
 
 ------------------------------------LOGGER-------------------------------
 
