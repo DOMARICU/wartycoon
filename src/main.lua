@@ -365,6 +365,16 @@ function functions.cratefarming(value)
 }
 
 local rebirthstages = {
+    ["Easter Egg [10 Rebirths]"] = 10,
+    ["Planes [7 Rebirths]"] = 7,
+    ["Tank Unlock Rebirth 6"] = 6,
+    ["Drone [5 Rebirths]"] = 5,
+    ["Missile Silo Start"] = 5,
+    ["Unlock Bunker and Missile Silo [2 Rebirth]"] = 2,
+    ["Vehicle Bay [1 Rebirth]"] = 1,
+    ["Vietnam Unlock Rebirth 4"] = 4,
+    ["Helicopters [3 Rebirths]"] = 3,
+    ["Boats [3 Rebirths]"] = 3,
     ["Trading Hub [1 Rebirth]"] = 1
 }
 
@@ -407,7 +417,7 @@ function functions.autobuilding(val)
                 local requiredRebirth = rebirthstages[button.Name]
                 if requiredRebirth and rebirths.Value < requiredRebirth then
                     print("Skipping " .. button.Name .. " - requires rebirth level " .. requiredRebirth)
-                    continue
+                    break
                 end
 
                 local priceTag = button:FindFirstChild("Price")
