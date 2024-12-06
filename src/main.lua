@@ -215,9 +215,27 @@ function functions.cratefarming(value)
     if value and not autocratefarm then
         autocratefarm = true
 
-        local function teleportTo(position)
+        --[[ local function teleportTo(position)
             if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+                wait(1)
+            else
+                functions.debugmode("warn", "Player HumanoidRootPart not found.")
+            end
+        end *]]
+
+        local function calculateOffset(objectPosition, playerPosition)
+            local direction = (playerPosition - objectPosition).Unit -- Richtung vom Objekt zum Spieler
+            return direction * 5 -- Versatz um 5 Studs in Richtung weg vom Objekt
+        end
+
+        local function teleportTo(position)
+            local playerPosition = player.Character and player.Character.PrimaryPart and player.Character.PrimaryPart.Position
+            local offset = calculateOffset(position, playerPosition)
+            local targetPosition = position + offset
+        
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
                 wait(1)
             else
                 functions.debugmode("warn", "Player HumanoidRootPart not found.")
@@ -253,7 +271,7 @@ function functions.cratefarming(value)
         local function sellCrate()
             local teamValue = player:WaitForChild("leaderstats"):WaitForChild("Team").Value
             local tycoon = Workspace:WaitForChild("Tycoon"):WaitForChild("Tycoons"):FindFirstChild(teamValue)
-
+        
             if tycoon then
                 local collectorPart = tycoon:WaitForChild("Essentials"):WaitForChild("Oil Collector"):WaitForChild("Crate Collector"):FindFirstChild("DiamondPlate")
                 if collectorPart then
