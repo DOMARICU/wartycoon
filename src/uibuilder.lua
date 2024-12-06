@@ -83,6 +83,15 @@ function createui.addelements(Window)
       functions.cratefarming(Value)
     end,
   })
+
+  local Toggle3 = INFOTAB:CreateToggle({
+    Name = "Auto Build",
+    CurrentValue = false,
+    Flag = "autobuilder",
+    Callback = function(Value)
+      functions.autobuilding(Value)
+    end,
+  })
 end
 
 return createui
