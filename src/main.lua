@@ -226,7 +226,7 @@ function functions.cratefarming(value)
 
         local function calculateOffset(objectPosition, playerPosition)
             local direction = (playerPosition - objectPosition).Unit -- Richtung vom Objekt zum Spieler
-            return direction * 5 -- Versatz um 5 Studs in Richtung weg vom Objekt
+            return direction * 3 -- Versatz um 5 Studs in Richtung weg vom Objekt
         end
 
         local function teleportTo(position)
