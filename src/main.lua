@@ -221,7 +221,7 @@ function functions.aimhelper(value)
 
     local function getNearestPlayer()
         local localCharacter = localPlayer.Character
-        local localHumanoidRootPart = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart")
+        local localHumanoidRootPart = localCharacter and localCharacter:FindFirstChild("HumanoidRootPart") --HumanoidRootPart
 
         if not localHumanoidRootPart then
             return nil
@@ -231,7 +231,7 @@ function functions.aimhelper(value)
         local shortestDistance = math.huge
 
         for _, player in pairs(players:GetPlayers()) do
-            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("Head") then
                 local targetHumanoidRootPart = player.Character.HumanoidRootPart
                 
                 if targetHumanoidRootPart:IsDescendantOf(workspace) then
@@ -281,38 +281,6 @@ function functions.aimhelper(value)
         print("Aimbot deactivated.")
     end
 end
-
-------------------SPINBOT---------------
-
-function functions.spinbot(value)
-    local spinbotEnabled = false
-    local runService = game:GetService("RunService")
-    local players = game:GetService("Players")
-    local localPlayer = players.LocalPlayer
-    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    if value and not spinbotEnabled then
-        spinbotEnabled = true
-        print("Spinbot activated.")
-
-        local connection
-        connection = runService.Stepped:Connect(function(_, deltaTime)
-            if not spinbotEnabled then
-                connection:Disconnect()
-                print("Spinbot deactivated.")
-                return
-            end
-
-            humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(180 * deltaTime), 0)
-        end)
-
-    elseif not value and spinbotEnabled then
-        spinbotEnabled = false
-        print("Spinbot deactivated.")
-    end
-end
-
 
 -------------------FARMING--------------
 function functions.cratefarming(value)

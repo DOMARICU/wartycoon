@@ -84,15 +84,6 @@ function createui.addelements(Window)
     end,
   })
 
-  local Toggle5 = RAGETAB:CreateToggle({
-    Name = "SPIN BOT",
-    CurrentValue = false,
-    Flag = "spinbtn",
-    Callback = function(Value)
-      functions.spinbot(Value)
-    end,
-  })
-
   local Toggle2 = INFOTAB:CreateToggle({
     Name = "Auto Crate Farm",
     CurrentValue = false,
