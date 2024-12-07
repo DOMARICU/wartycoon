@@ -427,6 +427,7 @@ function functions.cratefarming(value)
     "Mi28 Havoc",
     "Barrett M82",
     "GTE Shirt",
+    "WW2 US Army Pack",
 
     --OPERATION
     "Boxer CRV",
@@ -452,6 +453,11 @@ function functions.cratefarming(value)
     "KSG 12 Giver",
     "PP19 Bizon Giver",
     "Javelin Giver",
+    "M14 Rifle Giver",
+    "M1918 BAR Giver",
+    "Vietnam Clothing",
+    "Vietnam Armor",
+    "M1903 Springfield Giver",
 }
 
 local rebirthstages = {
